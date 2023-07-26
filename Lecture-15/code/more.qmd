@@ -9,8 +9,8 @@ datariumパッケージに含まれているmarketingデータを利用する
 Youtube広告, facebook広告, 新聞広告の予算と売り上げの関係を示したデータ
     
 ```{r}
-install.packages("datarium")
-library(datarium)
+library(pacman)
+p_load(datarium)
 data(marketing)
 ```
 
@@ -35,8 +35,7 @@ summary(marketing)
 GGally::ggpairs()関数を利用してデータをペアプロットする
 
 ```{r}
-library(ggplot2)
-library(GGally)
+p_load(ggplot2, GGally)
 ggpairs(marketing)
 ```
 
@@ -60,7 +59,7 @@ ml0  <- glm(sales  ~ 1,
 ### 結果の確認(OLS)
 
 ```{r}
-library(jtools)
+p_load(jtools)
 summ(ols1)
 ```
 
@@ -257,7 +256,7 @@ r2_1 <- cor(ols1$fitted.values, marketing$sales)^2
 実際に関数を用いて計算した結果と一致するか確認
 
 ```{r}
-all.equal(summary(ols1)$r.square |> as.numeric,
+all.equal(summary(ols1)$r.square |> as.numeric(),
           r2_1)
 ```
 
@@ -425,7 +424,7 @@ ms <- with_seed(
   map(1:n_iter,
       ~ tibble(x1 = rnorm(n_data),
                x2 = rnorm(n_data),
-               y  = 3 + 0 * x1 + 2 * x2 + rnorm(rnorm(n_data)))
+               y  = 3 + 0 * x1 + 2 * x2 + rnorm(n_data))
       )
   )
 ```
@@ -494,7 +493,7 @@ for (i in 1:n_iter){
       ms[[i]],
       tibble(x1 = rnorm(1000),
              x2 = rnorm(1000),
-             y  = 3 + 0 * x1 + 2 * x2 + rnorm(rnorm(1000))))
+             y  = 3 + 0 * x1 + 2 * x2 + rnorm(1000)))
   }
 }
 ```
