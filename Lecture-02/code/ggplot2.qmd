@@ -12,7 +12,7 @@ ggplot2パッケージは重ね書きです.
 `ggplot()`関数で白(グレー)の下地を用意します.
     
 ```{r}
-pacman::p_load(ggplot2)
+pacman::p_load(ggplot2, palmerpenguins)
 ggplot()
 ```
 
@@ -26,14 +26,14 @@ ggplot()
 ```{r}
 ggplot() +
   geom_histogram(
-    data = iris,
+    data    = penguins,
     mapping = aes(
-      x = Petal.Length
+      x = bill_length_mm
       )
     )
 ```
 
-そして, 6行目と12行目に`y = ..density..`を追加し, y軸を割合に変更します.
+そして, 6行目と12行目に`y = after_stat(density)`を追加し, y軸を密度に変更します.
 7行目に`fill = "blue"`を追加し, ヒストグラムに色を付けます.
 また, ヒストグラムを描画した図に`geom_density()`で密度曲線を追加しましょう.
 最終行で指定した引数の`alpha`は密度曲線の中の透明度を表します.
@@ -42,26 +42,26 @@ ggplot() +
 ```{r}
 ggplot() +
   geom_histogram(
-    data = iris,
+    data    = penguins,
     mapping = aes(
-      x = Petal.Length,
-      y = ..density..),
+      x = bill_length_mm,
+      y = after_stat(density)),
     fill = "blue") +
   geom_density(
-    data = iris,
+    data    = penguins,
     mapping = aes(
-      x = Petal.Length,
-      y = ..density..),
+      x = bill_length_mm,
+      y = after_stat(density)),
     alpha = 0)
 ```
 
 何度も同じデータやx軸等が利用できる場合には, はじめの`ggplot()`の引数の中でまとめて指定することができます.
 
 ```{r}
-ggplot(data = iris,
+ggplot(data    = penguins,
        mapping = aes(
-         x = Petal.Length,
-         y = ..density..)) +
+         x = bill_length_mm,
+         y = after_stat(density))) +
   geom_histogram(fill = "blue") +
   geom_density(alpha = 0)
 ```
@@ -69,9 +69,9 @@ ggplot(data = iris,
 さらに軸などを指定する`aes()`は外に出すこともできます
 
 ```{r}
-ggplot(data = iris) +
-  aes(x = Petal.Length,
-      y = ..density..) +
+ggplot(data = penguins) +
+  aes(x = bill_length_mm,
+      y = after_stat(density)) +
   geom_histogram(fill = "blue") +
   geom_density(alpha  = 0)
 ```
@@ -81,9 +81,9 @@ ggplot(data = iris) +
 `theme_classic()`で背景を白く, 重要でない線はなくすなど行います.
 
 ```{r}
-ggplot(data = iris) +
-  aes(x = Petal.Length,
-      y = ..density..) +
+ggplot(data = penguins) +
+  aes(x = bill_length_mm,
+      y = after_stat(density)) +
   geom_histogram(fill = "blue") +
   geom_density(alpha = 0) +
   theme_classic()
@@ -94,9 +94,9 @@ ggplot(data = iris) +
 タイトルの文字列はダブルクオーテーション(")で囲みます.
 
 ```{r}
-ggplot(data = iris) +
-  aes(x = Petal.Length,
-      y = ..density..) +
+ggplot(data = penguins) +
+  aes(x = bill_length_mm,
+      y = after_stat(density)) +
   geom_histogram(fill = "blue") +
   geom_density(alpha = 0) +
   theme_classic() +
@@ -110,10 +110,10 @@ ggplot(data = iris) +
 また, `geom_histogram(position = "identity")`とすると1つの図の中でカテゴリーごとにヒストグラムが描けます.
 
 ```{r}
-ggplot(data = iris) +
-  aes(x    = Petal.Length,
-      y    = ..density..,
-      fill = Species) +
+ggplot(data = penguins) +
+  aes(x    = bill_length_mm,
+      y    = after_stat(density),
+      fill = species) +
   geom_histogram(
     position = "identity",
     alpha    = 0.5) +
@@ -127,13 +127,13 @@ ggplot(data = iris) +
 `scales = "free"`でx軸やy軸をそれぞれのカテゴリーに最適化します.
 
 ```{r}
-ggplot(data = iris) +
-  aes(x    = Petal.Length,
-      y    = ..density..,
-      fill = Species) +
+ggplot(data = penguins) +
+  aes(x    = bill_length_mm,
+      y    = after_stat(density),
+      fill = species) +
   geom_histogram() +
   geom_density(alpha = 0) + 
-  facet_wrap(~Species,
+  facet_wrap(~species,
              scales = "free")
 ```
 
