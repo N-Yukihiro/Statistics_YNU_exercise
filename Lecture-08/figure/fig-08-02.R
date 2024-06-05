@@ -11,7 +11,7 @@ ggplot() +
                 args = list(df = test$parameter)) +
   geom_area(
     data = tibble(
-      X = seq(test$statistic,
+      X = seq(-test$statistic,
               4,
               len = 100),
       Y = dt(X, df = test$parameter)),
@@ -24,7 +24,7 @@ ggplot() +
   geom_area(
     data = tibble(
       X = seq(-4, 
-              -test$statistic,
+              test$statistic,
               len = 100),
       Y = dt(X, df = test$parameter)),
     aes(x    = X,
