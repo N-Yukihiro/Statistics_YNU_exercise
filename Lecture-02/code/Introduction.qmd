@@ -248,7 +248,7 @@ g <- data.frame(Int  = 1:300000,
                            each  = 2, 
                            times = 30000))
 write.csv(g,
-          here("exercise", "Lecture-02", "code", 
+          here("Lecture-02", "code", 
                "data", "data.csv"), 
           quote     = FALSE,
           row.names = FALSE)
@@ -260,7 +260,7 @@ write.csv(g,
 `header = TRUE`で先頭行が行名になっていることを明示します.
 
 ```{r}
-dat1 <- read.csv(here("exercise", "Lecture-02", "code",
+dat1 <- read.csv(here("Lecture-02", "code",
                       "data", "data.csv"),
                  header = TRUE)
 ```
@@ -269,7 +269,7 @@ dat1 <- read.csv(here("exercise", "Lecture-02", "code",
 自由度も高く, やや速いです.
 
 ```{r}
-dat2 <- readr::read_csv(here("exercise", "Lecture-02", "code",
+dat2 <- readr::read_csv(here("Lecture-02", "code",
                              "data", "data.csv"))
 ```
 
@@ -279,7 +279,7 @@ dat2 <- readr::read_csv(here("exercise", "Lecture-02", "code",
     
 ```{r}
 p_load(data.table)
-dat3 <- data.table::fread(here("exercise", "Lecture-02", "code",
+dat3 <- data.table::fread(here("Lecture-02", "code",
                                "data", "data.csv"),
                           data.table = FALSE)
 ```
@@ -288,11 +288,11 @@ dat3 <- data.table::fread(here("exercise", "Lecture-02", "code",
 
 各関数によって, 読み込む速さが異なるため, 比較してみましょう.
 ```{r}
-system.time(read.csv(here("exercise", "Lecture-02", "code",
+system.time(read.csv(here("Lecture-02", "code",
                           "data", "data.csv")))
-system.time(readr::read_csv(here("exercise", "Lecture-02", "code", 
+system.time(readr::read_csv(here("Lecture-02", "code", 
                                  "data", "data.csv")))
-system.time(data.table::fread(here("exercise", "Lecture-02", "code",
+system.time(data.table::fread(here("Lecture-02", "code",
                                    "data", "data.csv")))
 ```
 
@@ -305,14 +305,14 @@ Windowsで作られたファイルを読み込む際には Encoding=cp932 (Shift
 ファイルを書き出す際に文字コードを指定するには, fileEncoding = "UTF-8"を引数に追加しましょう.
 
 ```{r}
-dat1 <- read.csv(here("exercise", "Lecture-02", "code",
+dat1 <- read.csv(here("Lecture-02", "code",
                       "data", "data.csv"), 
                  header       = TRUE, 
                  fileEncoding = "UTF8")
-dat2 <- readr::read_csv(here("exercise", "Lecture-02", "code",
+dat2 <- readr::read_csv(here("Lecture-02", "code",
                              "data", "data.csv"), 
                         locale = locale(encoding = "UTF8"))
-write.csv(dat2, here("exercise", "Lecture-02", "code", 
+write.csv(dat2, here("Lecture-02", "code", 
                      "data", "data.csv"), 
           quote        = FALSE,
           row.names    = FALSE,
