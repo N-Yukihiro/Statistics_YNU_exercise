@@ -14,3 +14,4 @@ ggplot(data = NULL) +
   theme_void() +
   theme(panel.background = 
           element_rect(fill = "orange"))
+ggsave(here::here("Lecture-02", "figure", "sunset.pdf"))

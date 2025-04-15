@@ -24,3 +24,4 @@ ggplot(data = NULL) +
   theme_void() +
   theme(panel.background =
           element_rect(fill = "black"))
+ggsave(here::here("Lecture-02", "figure", "night_sky.pdf"))
