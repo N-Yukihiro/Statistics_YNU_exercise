@@ -1,5 +1,5 @@
 ---
-title: "Let’s Using R"
+title: "Let's Use R"
 format: html
 ---
 
@@ -31,7 +31,7 @@ getwd()
 ここでは移動するディレクトリがないので, `#`をつけてRを実行しないようにしています.
 
 ```{r}
-#setwd("ここにパスを打ち込む")
+# setwd("ここにパスを打ち込む")
 ```
 
 ### 新しいディレクトリ(フォルダ)の作成
@@ -94,7 +94,7 @@ here()関数の引数として, フォルダ名とファイル名をそれぞれ
 ```{r}
 p_load(here)
 here()
-#here("フォルダ名", "ファイル名")
+# here("フォルダ名", "ファイル名")
 ```
 
 ### HELPの利用
@@ -166,10 +166,10 @@ a / b
 rep()関数は要素を複製する関数です.
 
 ```{r}
-c <- 1:10
-d <- c * 2
-e <- c(rep("aa", 3), rep("bb", 4), rep("cc", 3))
-f <- data.frame(y = c, x = d, cha = e)
+d <- 1:10
+e <- d * 2
+f <- c(rep("aa", 3), rep("bb", 4), rep("cc", 3))
+g <- data.frame(y = d, x = e, cha = f)
 ```
 
 ### 変数名の確認
@@ -178,7 +178,7 @@ f <- data.frame(y = c, x = d, cha = e)
 変数名を確認するためには, `names()`を利用します.
 
 ```{r}
-names(f)
+names(g)
 ```
 
 ### 先頭から数行を表示
@@ -191,7 +191,7 @@ names(f)
 なお, 5LのLは, 5が整数であることを示しています.
 
 ```{r}
-head(f, n = 5L)
+head(g, n = 5L)
 ```
 
 ### データ構造の確認
@@ -202,7 +202,7 @@ head(f, n = 5L)
 各列ごとに列名と:の後にそのデータ型と最初からいくつかのデータが表示されます.
 
 ```{r}
-str(f)
+str(g)
 ```
 
 ### 別の方法でデータ構造を確認
@@ -210,10 +210,10 @@ str(f)
 データ構造を別の方法で確認してみましょう.
 `dplyr`パッケージの`glimpse`関数を利用します.
 
-なお, `dplyr::glimpse`はdplyrパッケージの`glimpse()`関数を利用することを明示的に示す記法であり, `library(dplyr)`すれば基本的には必要はありません.
+なお, `dplyr::glimpse`はdplyrパッケージの`glimpse()`関数を利用することを明示的に示す記法であり, `library(dplyr)`すれば基本的には必要はありませんが, 近年は利用を推奨されています.
 
 ```{r}
-dplyr::glimpse(f)
+dplyr::glimpse(g)
 ```
 
 ### 記述統計
@@ -225,7 +225,7 @@ dplyr::glimpse(f)
 文字列の場合には, 基本的にいくつデータが存在するのかしか表示されません.
 
 ```{r}
-summary(f)
+summary(g)
 ```
 
 ### データの書き出し
@@ -237,21 +237,30 @@ summary(f)
 ```{r}
 ABCDE <- c("A", "B", "C", "D", "E")
 Japanese <- c("壱", "弐", "参", "四", "五")
-g <- data.frame(Int  = 1:300000, 
-                Int2 = seq(from       = 0, 
-                           by         = 2.5, 
-                           length.out = 300000), 
-                fac  = rep(ABCDE,    
-                           each  = 2,
-                           times = 30000),
-                jpn  = rep(Japanese, 
-                           each  = 2, 
-                           times = 30000))
-write.csv(g,
-          here("Lecture-02", "code", 
-               "data", "data.csv"), 
-          quote     = FALSE,
-          row.names = FALSE)
+h <- data.frame(
+  Int = 1:300000,
+  Int2 = seq(
+    from = 0,
+    by = 2.5,
+    length.out = 300000
+  ),
+  fac = rep(ABCDE,
+    each  = 2,
+    times = 30000
+  ),
+  jpn = rep(Japanese,
+    each  = 2,
+    times = 30000
+  )
+)
+write.csv(h,
+  here(
+    "Lecture-02", "code",
+    "data", "data.csv"
+  ),
+  quote = FALSE,
+  row.names = FALSE
+)
 ```
 
 ### データの読み込み
@@ -260,17 +269,23 @@ write.csv(g,
 `header = TRUE`で先頭行が行名になっていることを明示します.
 
 ```{r}
-dat1 <- read.csv(here("Lecture-02", "code",
-                      "data", "data.csv"),
-                 header = TRUE)
+dat1 <- read.csv(
+  here(
+    "Lecture-02", "code",
+    "data", "data.csv"
+  ),
+  header = TRUE
+)
 ```
 
 最近増えてきているのは, `readr`パッケージに含まれる`read_csv()`関数です.
 自由度も高く, やや速いです.
 
 ```{r}
-dat2 <- readr::read_csv(here("Lecture-02", "code",
-                             "data", "data.csv"))
+dat2 <- readr::read_csv(here(
+  "Lecture-02", "code",
+  "data", "data.csv"
+))
 ```
 
 最後に`data.table`パッケージの`fread()`関数を紹介します.
@@ -279,21 +294,31 @@ dat2 <- readr::read_csv(here("Lecture-02", "code",
     
 ```{r}
 p_load(data.table)
-dat3 <- data.table::fread(here("Lecture-02", "code",
-                               "data", "data.csv"),
-                          data.table = FALSE)
+dat3 <- data.table::fread(
+  here(
+    "Lecture-02", "code",
+    "data", "data.csv"
+  ),
+  data.table = FALSE
+)
 ```
 
-### 速度の比較
+### 速度の比較(Advanced)
 
 各関数によって, 読み込む速さが異なるため, 比較してみましょう.
 ```{r}
-system.time(read.csv(here("Lecture-02", "code",
-                          "data", "data.csv")))
-system.time(readr::read_csv(here("Lecture-02", "code", 
-                                 "data", "data.csv")))
-system.time(data.table::fread(here("Lecture-02", "code",
-                                   "data", "data.csv")))
+system.time(read.csv(here(
+  "Lecture-02", "code",
+  "data", "data.csv"
+)))
+system.time(readr::read_csv(here(
+  "Lecture-02", "code",
+  "data", "data.csv"
+)))
+system.time(data.table::fread(here(
+  "Lecture-02", "code",
+  "data", "data.csv"
+)))
 ```
 
 ### 文字コード
@@ -305,18 +330,29 @@ Windowsで作られたファイルを読み込む際には Encoding=cp932 (Shift
 ファイルを書き出す際に文字コードを指定するには, fileEncoding = "UTF-8"を引数に追加しましょう.
 
 ```{r}
-dat1 <- read.csv(here("Lecture-02", "code",
-                      "data", "data.csv"), 
-                 header       = TRUE, 
-                 fileEncoding = "UTF8")
-dat2 <- readr::read_csv(here("Lecture-02", "code",
-                             "data", "data.csv"), 
-                        locale = locale(encoding = "UTF8"))
-write.csv(dat2, here("Lecture-02", "code", 
-                     "data", "data.csv"), 
-          quote        = FALSE,
-          row.names    = FALSE,
-          fileEncoding = "UTF-8")
+dat1 <- read.csv(
+  here(
+    "Lecture-02", "code",
+    "data", "data.csv"
+  ),
+  header = TRUE,
+  fileEncoding = "UTF8"
+)
+dat2 <- readr::read_csv(
+  here(
+    "Lecture-02", "code",
+    "data", "data.csv"
+  ),
+  locale = locale(encoding = "UTF8")
+)
+write.csv(dat2, here(
+  "Lecture-02", "code",
+  "data", "data.csv"
+),
+quote        = FALSE,
+row.names    = FALSE,
+fileEncoding = "UTF-8"
+)
 ```
 
 ### Excelファイルの読み込み
@@ -328,8 +364,9 @@ Excelファイルを読み込むための関数も様々あります.
 #| eval: false
 
 p_load(readxl)
-excel <- readxl::read_excel("data.xlsx", 
-                            sheet = "シート名or番号")
+excel <- readxl::read_excel("data.xlsx",
+  sheet = "シート名or番号"
+)
 ```
 
 以上です.
