@@ -1,0 +1,220 @@
+---
+title: "大数の法則と中心極限定理"
+format: html
+---
+
+### 利用するデータ
+
+今回は`ggplot2`パッケージに含まれる`diamonds`というデータセットを利用する.
+これは約54,000行10列からなるデータである.
+ダイヤモンドの価格($)やカラット, カットのクオリティなどの属性値が含まれる.
+
+このデータを母集団に見立てて, サンプリングの学習を行う.
+母集団がやや小さいことやサンプルサイズや標本数は計算の都合上やや小さいことに注意.
+まずは`diamonds`データの列名を`names()`関数を利用して確認する.
+
+```{r}
+library(pacman)
+pacman::p_load(ggplot2)
+names(diamonds)
+```
+
+### データの先頭6行確認する
+
+`head()`関数を利用して`diamonds`データの先頭6行を確認する.
+
+```{r}
+head(diamonds)
+```
+
+### データ構造を確認する
+
+`dplyr`パッケージの`glimpse()`関数を利用して`diamonds`データのデータ構造を確認する.
+特に行数や列数, 各列のデータ型などを把握する.
+
+```{r}
+p_load(dplyr)
+dplyr::glimpse(diamonds)
+```
+
+### データの概要を把握する
+
+`summary()`関数を利用してデータの概要を把握する.
+
+```{r}
+summary(diamonds)
+```
+
+### データ内の分散・標準偏差を求める
+
+今回は`diamonds`データを母集団とみなすので, データの標本分散を求め, 母分散とみなす.
+列は`price`を利用する.
+
+```{r}
+var_pop <- mean((diamonds$price - mean(diamonds$price))^2)
+var_pop
+sd_pop  <- sqrt(var_pop)
+sd_pop
+```
+
+後で利用するために母平均もオブジェクトに格納する.
+
+```{r}
+mean_pop <- mean(diamonds$price)
+mean_pop
+```
+
+
+### データのヒストグラムを描画する
+
+`diamonds`データの`price`の列のヒストグラムを描画する.
+価格や年収のデータに多い右に裾の長いデータになっている.
+
+```{r}
+ggplot(data = diamonds) +
+  aes(x = price) +
+  geom_histogram()
+```
+
+### データの無作為抽出
+
+`dplyr::slice_sample()`関数を利用してデータの無作為抽出を行う.
+
+`diamonds`データからサイズ100のサンプルを非復元抽出(`replace = FALSE`)し, `ss`というオブジェクトに格納する.
+
+無作為抽出の際に疑似乱数を利用しているので, 乱数の種を指定して結果を再現できるようにする.
+`withr`パッケージの`with_seed()`関数を利用する.
+第1引数で任意の乱数の種を指定し, 第2引数に実行する関数を指定する.
+
+```{r}
+## ssはsingle sampleの略
+pacman::p_load(withr)
+sample_size <- 100
+ss <- withr::with_seed(
+  31415,
+  dplyr::slice_sample(.data   = diamonds, 
+                      n       = sample_size, 
+                      replace = FALSE))
+```
+
+### 標本の概要を確認
+
+`summary()`関数を利用して標本の概要を把握する.
+
+```{r}
+summary(ss)
+```
+
+### 標本の平均, 分散を母集団のそれと比較する
+
+標本平均, 標本分散をそれぞれ母平均, 母分散と比較する.
+
+```{r}
+mean(ss$price)
+mean_pop
+mean((ss$price - mean(ss$price))^2)
+var_pop
+```
+
+### 標本データのヒストグラム
+
+標本データもヒストグラムを描画する.
+形状は似ているが, 母集団を再現するには至らない.
+
+```{r}
+ggplot(data = ss) +
+  aes(x = price) +
+  geom_histogram()
+```
+
+### 標本の数を増やす
+
+サイズ100のサンプルを1000個(サンプル数1000)作成する.
+繰り返し行う処理などは`tidyverse`パッケージに含まれている`purrr`パッケージを利用すると便利.
+
+`purrr::map()`関数は, 第1引数で指定したリストに対して, 第2引数以降で書かれた関数を実行してくれる.
+ここでは第2引数で`~`を使って無名関数を定義している.
+結果はList形式となる.
+
+```{r}
+pacman::p_load(purrr)
+## msはmulti samplesの略
+ms <- with_seed(
+  31415,
+  purrr::map(1:1000,
+             ~ slice_sample(.data   = diamonds,
+                            n       = sample_size,
+                            replace = FALSE)))
+```
+
+### 各標本の標本平均を求める
+
+`dplyr::summarise()`関数はデータを要約する関数である.
+`sample_mean`という列名を作成し, そこに`ms`オブジェクトの中の各`price`の値の平均を格納する.
+
+最後に結果のリストを`list_rbind()`関数を利用して, 各標本の平均を1つのデータフレームに縦方向に整理している.
+
+```{r}
+ms_mean <- purrr::map(ms, 
+                      dplyr::summarise,
+                      sample_mean = mean(price)) |> 
+  list_rbind()
+```
+
+### 標本平均の平均を求める
+
+標本平均の平均を求め, 母平均と比較する.
+標本平均の標本平均値は母平均ととても近い値になる.
+サンプルサイズをさらに増やすと標本平均は母平均と一致する.
+
+```{r}
+mean(ms_mean$sample_mean)
+mean_pop
+```
+
+### 標本平均の分散
+
+標本平均の分散は理論値である$\frac{\sigma^2}{n}$と近似する.
+
+```{r}
+mean((ms_mean$sample_mean - mean(ms_mean$sample_mean))^2)
+var_pop / sample_size
+```
+
+### 標本平均のヒストグラム
+
+標本平均の分布は平均$\mu$, 分散$\frac{\sigma^2}{n}$の正規分布で近似できる.
+中心極限定理は元の分布を問わない.
+
+```{r}
+ggplot(data = ms_mean) +
+  aes(x = sample_mean) +
+  geom_histogram(
+    aes(y = after_stat(density)),
+    fill  = "blue",
+    alpha = 0.2) +
+  geom_density(alpha = 0.5,
+               fill  = "blue") +
+  geom_vline(xintercept = mean_pop) +
+  stat_function(
+    fun  = dnorm,
+    args = list(
+      mean = mean_pop,
+      sd   = sqrt(var_pop / sample_size)),
+    linewidth = 2)
+```
+
+### 標本分散と不偏標本分散の平均
+
+標本分散の平均と母集団の分散の差は大きいが, 不偏標本分散の平均と標本分散は近似する.
+
+```{r}
+ms_var <- map(
+  ms, 
+  summarise,
+  sample_var   = mean((price - mean(price))^2),
+  unbiased_var = var(price)) |> 
+  list_rbind()
+summarise(ms_var, mean(sample_var), mean(unbiased_var))
+var_pop
+```
