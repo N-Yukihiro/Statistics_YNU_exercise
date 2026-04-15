@@ -23,17 +23,21 @@ quantile(penguins$bill_length_mm, na.rm = TRUE)
 
 箱ひげ図を描画するには, `geom_boxplot()`を追加する.
 `quantile()`関数で, 0, .25, 0.5, 0.75 , 1に該当する値に赤線を重ねた.
+外れ値の多いデータでは0%, 100%の位置には重ならない.
 
 ```{r}
 pacman::p_load(ggplot2)
 ggplot(penguins) +
-  aes(x = bill_length_mm) +
-  geom_boxplot() +
-  geom_vline(
-    xintercept = 
-      quantile(penguins$bill_length_mm, 
-               na.rm = TRUE),
-    colour     = "red")
+    aes(x = bill_length_mm) +
+    geom_boxplot() +
+    geom_vline(
+        xintercept =
+            quantile(
+                penguins$bill_length_mm,
+                na.rm = TRUE
+            ),
+        colour = "red"
+    )
 ```
 
 
@@ -47,12 +51,14 @@ ggplot(penguins) +
 ```{r}
 p_load_gh("clauswilke/colorblindr")
 ggplot(penguins) +
-  aes(x    = bill_length_mm,
-      y    = species,
-      fill = species) +
-  geom_boxplot() +
-  geom_jitter() +
-  scale_fill_OkabeIto()
+    aes(
+        x = bill_length_mm,
+        y = species,
+        fill = species
+    ) +
+    geom_boxplot() +
+    geom_jitter() +
+    scale_fill_OkabeIto()
 ```
 
 ### 箱ひげ図とヴァイオリンプロット
@@ -62,16 +68,22 @@ ggplot(penguins) +
 
 ```{r}
 ggplot(penguins) +
-  aes(x = bill_length_mm,
-      y = species) +
-  geom_violin(
-    aes(fill = species)) +
-  geom_boxplot(alpha = 0) +
-  geom_jitter() +
-  scale_fill_manual(
-    values = c("red", 
-               "blue",
-               "green"))
+    aes(
+        x = bill_length_mm,
+        y = species
+    ) +
+    geom_violin(
+        aes(fill = species)
+    ) +
+    geom_boxplot(alpha = 0) +
+    geom_jitter() +
+    scale_fill_manual(
+        values = c(
+            "red",
+            "blue",
+            "green"
+        )
+    )
 ```
 
 ### 算術平均からの偏差の和(Advanced)
@@ -81,10 +93,14 @@ ggplot(penguins) +
 
 ```{r}
 sum(x - mean(x))
-sum(penguins$bill_length_mm - 
-      mean(penguins$bill_length_mm,
-           na.rm = TRUE),
-    na.rm = TRUE)
+sum(
+    penguins$bill_length_mm -
+        mean(
+            penguins$bill_length_mm,
+            na.rm = TRUE
+        ),
+    na.rm = TRUE
+)
 ```
 
 ### 標本分散
@@ -105,7 +121,7 @@ Rに実装されていない計算に対して自分で関数を定義できる.
 
 ```{r}
 sample_var <- function(x) {
-  mean((x - mean(x))^2)
+    mean((x - mean(x))^2)
 }
 
 sample_var(1:9)
@@ -159,15 +175,16 @@ sd(z2)
 データ等を設定し, 計算する
 
 ```{r}
-x      <- na.omit(penguins$bill_length_mm)
+x <- na.omit(penguins$bill_length_mm)
 size_x <- length(x)
 mean_x <- mean(x)
-sd_x   <- seewave::rms(x - mean_x)
-k      <- 2
+sd_x <- seewave::rms(x - mean_x)
+k <- 2
 
-TF     <- ifelse(
-  abs(x - mean_x) - k * sd_x >= 0,
-  1, 0)
+TF <- ifelse(
+    abs(x - mean_x) - k * sd_x >= 0,
+    1, 0
+)
 sum(TF) / size_x
 1 / k^2
 sum(TF) / size_x <= 1 / k^2

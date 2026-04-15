@@ -11,8 +11,10 @@ format: html
 ```{r}
 library(pacman)
 p_load(dplyr, wooldridge)
-dat <- select(saving,
-              sav, inc, educ)
+dat <- select(
+    saving,
+    sav, inc, educ
+)
 str(dat)
 ```
 
@@ -67,6 +69,14 @@ MODEL FITに分析の結果が記述される.
 Est. の列に回帰係数が, S.E. に標準誤差が示される.
 t val.にt値が示され, pにp値が示される.
 
+### 従来の`summary()`
+
+デフォルトの`summary()`関数の表示も確認する.
+
+```{r}
+summary(ols1)
+```
+
 ### 回帰係数の95%信頼区間を表示
 
 回帰係数の95%信頼区間を表示するには, summ(confint = TRUE)を指定する.
@@ -89,11 +99,15 @@ summ(ols1, scale = TRUE, transform.response = TRUE)
 
 ```{r}
 ggplot(data = dat) +
-  aes(x = inc, 
-      y = sav) +
-  geom_point() +
-  geom_smooth(method = "lm", 
-              se     = FALSE)
+    aes(
+        x = inc,
+        y = sav
+    ) +
+    geom_point() +
+    geom_smooth(
+        method = "lm",
+        se = FALSE
+    )
 ```
 ### 結果を論文に掲載する
 
@@ -104,13 +118,15 @@ star.cutoffs = NA, omit.table.layout = "n"は忘れない
 
 ```{r}
 p_load(stargazer)
-stargazer::stargazer(ols1,
-                     type              = "text",
-                     style             = "all", 
-                     ci                = TRUE,
-                     star.cutoffs      = NA, 
-                     omit.table.layout = 'n',
-                     align             = TRUE)
+stargazer::stargazer(
+    ols1,
+    type              = "text",
+    style             = "all",
+    ci                = TRUE,
+    star.cutoffs      = NA,
+    omit.table.layout = "n",
+    align             = TRUE
+)
 ```
 
 ### 予測(新しい説明変数のデータセットを作成)
@@ -120,9 +136,11 @@ stargazer::stargazer(ols1,
 
 ```{r}
 new_dat <- data.frame(
-  inc = seq(from        = min(dat$inc),
-             to         = max(dat$inc),
-             length.out = 100)
+    inc = seq(
+        from = min(dat$inc),
+        to = max(dat$inc),
+        length.out = 100
+    )
 )
 ```
 
@@ -133,15 +151,19 @@ new_dat <- data.frame(
 `interval = "confidence"`で信頼区間が, `interval = "prediction"`で予測区間が求められる.
 
 ```{r}
-ci <- predict(ols1, 
-              newdata  = new_dat, 
-              interval = "confidence",
-              level    = 0.95)
+ci <- predict(
+    ols1,
+    newdata  = new_dat,
+    interval = "confidence",
+    level    = 0.95
+)
 ci <- bind_cols(new_dat, ci)
-pred <- predict(ols1, 
-                newdata  = new_dat, 
-                interval = "prediction",
-                level    = 0.95)
+pred <- predict(
+    ols1,
+    newdata  = new_dat,
+    interval = "prediction",
+    level    = 0.95
+)
 pred <- bind_cols(new_dat, pred)
 ```
 
@@ -151,22 +173,26 @@ pred <- bind_cols(new_dat, pred)
 
 ```{r}
 ggplot() +
-  aes(x = inc) +
-  geom_point(
-    data  = dat,
-    aes(y = sav)) +
-  geom_smooth(
-    data   = dat,
-    aes(y  = sav),
-    method = "lm",
-    se     = FALSE) +
-  geom_ribbon(
-    data     = pred,
-    aes(ymin = lwr,
-        ymax = upr),
-    fill     = "lightblue",
-    alpha    = 0.5
-  )
+    aes(x = inc) +
+    geom_point(
+        data  = dat,
+        aes(y = sav)
+    ) +
+    geom_smooth(
+        data   = dat,
+        aes(y = sav),
+        method = "lm",
+        se     = FALSE
+    ) +
+    geom_ribbon(
+        data = pred,
+        aes(
+            ymin = lwr,
+            ymax = upr
+        ),
+        fill = "lightblue",
+        alpha = 0.5
+    )
 ```
 
 ### `geom_smooth()`と区間
@@ -176,12 +202,14 @@ ggplot() +
 
 ```{r}
 ggplot(data = dat) +
-  aes(x = inc,
-      y = sav) +
-  geom_point() +
-  geom_smooth(
-    method = "lm"
-  )
+    aes(
+        x = inc,
+        y = sav
+    ) +
+    geom_point() +
+    geom_smooth(
+        method = "lm"
+    )
 ```
 
 ### 回帰直線の信頼区間
@@ -190,21 +218,25 @@ ggplot(data = dat) +
 
 ```{r}
 ggplot() +
-  aes(x = inc) +
-  geom_point(
-    data  = dat,
-    aes(y = sav)) +
-  geom_smooth(
-    data   = dat,
-    aes(y  = sav),
-    method = "lm",
-    se     = TRUE) +
-  geom_ribbon(
-    data     = ci,
-    aes(ymin = lwr,
-        ymax = upr),
-    fill     = "lightblue",
-    alpha    = 0.5
-  )
+    aes(x = inc) +
+    geom_point(
+        data  = dat,
+        aes(y = sav)
+    ) +
+    geom_smooth(
+        data   = dat,
+        aes(y = sav),
+        method = "lm",
+        se     = TRUE
+    ) +
+    geom_ribbon(
+        data = ci,
+        aes(
+            ymin = lwr,
+            ymax = upr
+        ),
+        fill = "lightblue",
+        alpha = 0.5
+    )
 ```
 

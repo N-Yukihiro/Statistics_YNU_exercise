@@ -15,8 +15,10 @@ library(pacman)
 pacman::p_load(palmerpenguins)
 x <- 1:9
 median(x)
-median(penguins$bill_length_mm,
-       na.rm = TRUE)
+median(
+    penguins$bill_length_mm,
+    na.rm = TRUE
+)
 ```
 
 ### 算術平均
@@ -29,9 +31,10 @@ median(penguins$bill_length_mm,
 ```{r}
 mean(x)
 mean(penguins$bill_length_mm, na.rm = TRUE)
-round(mean(penguins$bill_length_mm,
-           na.rm = TRUE), 
-      2)
+round(
+    mean(penguins$bill_length_mm, na.rm = TRUE),
+    2
+)
 ```
 
 ### `summary()`関数を用いて求める
@@ -52,11 +55,11 @@ summary(penguins)
 総和をデータサイズで割ることで, 算術平均が得られる.
 
 ```{r}
-sum_x  <- sum(x)
+sum_x <- sum(x)
 size_x <- length(x)
 sum_x / size_x
-sum(penguins$bill_length_mm, na.rm = TRUE) / 
-  sum(!is.na(penguins$bill_length_mm))
+sum(penguins$bill_length_mm, na.rm = TRUE) /
+    sum(!is.na(penguins$bill_length_mm))
 ```
 
 ### ヒストグラムに算術平均を加える
@@ -69,12 +72,16 @@ sum(penguins$bill_length_mm, na.rm = TRUE) /
 ```{r}
 p_load(ggplot2)
 ggplot(penguins) +
-  aes(x = bill_length_mm) +
-  geom_histogram() +
-  geom_vline(xintercept = mean(penguins$bill_length_mm, 
-                               na.rm = TRUE),
-             linetype   = "dashed",
-             colour     = "red")
+    aes(x = bill_length_mm) +
+    geom_histogram() +
+    geom_vline(
+        xintercept = mean(
+            penguins$bill_length_mm,
+            na.rm = TRUE
+        ),
+        linetype = "dashed",
+        colour = "red"
+    )
 ```
 
 ### 幾何平均
@@ -84,8 +91,10 @@ ggplot(penguins) +
 ```{r}
 pacman::p_load(psych)
 psych::geometric.mean(x)
-geometric.mean(penguins$bill_length_mm, 
-               na.rm = TRUE)
+geometric.mean(
+    penguins$bill_length_mm,
+    na.rm = TRUE
+)
 ```
 
 ### 定義に従って幾何平均を求める(Advanced)
@@ -99,9 +108,10 @@ geometric.mean(penguins$bill_length_mm,
 ```{r}
 prod(x)^(1 / length(x))
 
-prod(penguins$bill_length_mm,
-     na.rm = TRUE)^
-  (1 / sum(!is.na(penguins$bill_length_mm)))
+prod(
+    penguins$bill_length_mm,
+    na.rm = TRUE
+)^(1 / sum(!is.na(penguins$bill_length_mm)))
 ```
 
 ### `log()`を用いて幾何平均を求める(Advanced)
@@ -131,7 +141,7 @@ harmonic.mean(penguins$bill_length_mm, na.rm = TRUE)
 総和をデータサイズで除し, 更に逆数を求めることで調和平均が得られる.
 
 ```{r}
-((sum(x^(-1)))/length(x))^(-1)
+((sum(x^(-1))) / length(x))^(-1)
 mean(penguins$bill_length_mm^(-1), na.rm = TRUE)^(-1)
 ```
 

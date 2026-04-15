@@ -85,18 +85,6 @@ library(pacman)
 p_load(readr, ggplot2)
 ```
 
-### `here`パッケージ
-
-データの場所を指定するのに便利なhereパッケージを利用してみましょう.
-hereパッケージは, プロジェクト(.Rproj)を起点にデータがどこにあるのかOSに関わらず同様に記述できます.
-here()関数の引数として, フォルダ名とファイル名をそれぞれダブルクオーテーションで囲み, カンマで繋いであげましょう.
-
-```{r}
-p_load(here)
-here()
-# here("フォルダ名", "ファイル名")
-```
-
 ### HELPの利用
 
 パッケージや関数の利用についてわからないことがあればHELPを利用してみましょう.
@@ -126,11 +114,11 @@ HELPの出し方は?を知りたい関数やパッケージ名の前につける
 exp()関数はネイピア数$e$を底とし, 引数を指数として計算します.
 sqrt()関数は$\sqrt{}$を表しています.
 log()関数は自然対数であり, 2を底とするときはlog2(), 10を底とするときはlog10()を利用します.
-^は累乗, 10E04は100,000をそれぞれ表しています.
+^は累乗, 1e04は10,000をそれぞれ表しています.
 
 ```{r}
 exp(2) * 10^2
-sqrt(2) * 10E04
+sqrt(2) * 1e04
 log(2)
 ```
 
@@ -238,28 +226,24 @@ summary(g)
 ABCDE <- c("A", "B", "C", "D", "E")
 Japanese <- c("壱", "弐", "参", "四", "五")
 h <- data.frame(
-  Int = 1:300000,
-  Int2 = seq(
-    from = 0,
-    by = 2.5,
-    length.out = 300000
-  ),
-  fac = rep(ABCDE,
-    each  = 2,
-    times = 30000
-  ),
-  jpn = rep(Japanese,
-    each  = 2,
-    times = 30000
-  )
+    Int = 1:300000,
+    Int2 = seq(
+        from = 0,
+        by = 2.5,
+        length.out = 300000
+    ),
+    fac = rep(ABCDE,
+        each  = 2,
+        times = 30000
+    ),
+    jpn = rep(Japanese,
+        each  = 2,
+        times = 30000
+    )
 )
-write.csv(h,
-  here(
-    "Lecture-02", "code",
-    "data", "data.csv"
-  ),
-  quote = FALSE,
-  row.names = FALSE
+readr::write_csv(
+    h,
+    "data/data.csv"
 )
 ```
 
@@ -270,11 +254,8 @@ write.csv(h,
 
 ```{r}
 dat1 <- read.csv(
-  here(
-    "Lecture-02", "code",
-    "data", "data.csv"
-  ),
-  header = TRUE
+    "data/data.csv",
+    header = TRUE
 )
 ```
 
@@ -282,10 +263,7 @@ dat1 <- read.csv(
 自由度も高く, やや速いです.
 
 ```{r}
-dat2 <- readr::read_csv(here(
-  "Lecture-02", "code",
-  "data", "data.csv"
-))
+dat2 <- readr::read_csv("data/data.csv")
 ```
 
 最後に`data.table`パッケージの`fread()`関数を紹介します.
@@ -295,11 +273,8 @@ dat2 <- readr::read_csv(here(
 ```{r}
 p_load(data.table)
 dat3 <- data.table::fread(
-  here(
-    "Lecture-02", "code",
-    "data", "data.csv"
-  ),
-  data.table = FALSE
+    "data/data.csv",
+    data.table = FALSE
 )
 ```
 
@@ -307,18 +282,9 @@ dat3 <- data.table::fread(
 
 各関数によって, 読み込む速さが異なるため, 比較してみましょう.
 ```{r}
-system.time(read.csv(here(
-  "Lecture-02", "code",
-  "data", "data.csv"
-)))
-system.time(readr::read_csv(here(
-  "Lecture-02", "code",
-  "data", "data.csv"
-)))
-system.time(data.table::fread(here(
-  "Lecture-02", "code",
-  "data", "data.csv"
-)))
+system.time(read.csv("data/data.csv"))
+system.time(readr::read_csv("data/data.csv"))
+system.time(data.table::fread("data/data.csv"))
 ```
 
 ### 文字コード
@@ -331,27 +297,17 @@ Windowsで作られたファイルを読み込む際には Encoding=cp932 (Shift
 
 ```{r}
 dat1 <- read.csv(
-  here(
-    "Lecture-02", "code",
-    "data", "data.csv"
-  ),
-  header = TRUE,
-  fileEncoding = "UTF8"
+    "data/data.csv",
+    header = TRUE,
+    fileEncoding = "UTF-8"
 )
 dat2 <- readr::read_csv(
-  here(
-    "Lecture-02", "code",
-    "data", "data.csv"
-  ),
-  locale = locale(encoding = "UTF8")
+    "data/data.csv",
+    locale = locale(encoding = "UTF-8")
 )
-write.csv(dat2, here(
-  "Lecture-02", "code",
-  "data", "data.csv"
-),
-quote        = FALSE,
-row.names    = FALSE,
-fileEncoding = "UTF-8"
+readr::write_csv(
+    dat2, "data/data.csv",
+    locale = locale(encoding = "UTF-8")
 )
 ```
 
@@ -365,7 +321,7 @@ Excelファイルを読み込むための関数も様々あります.
 
 p_load(readxl)
 excel <- readxl::read_excel("data.xlsx",
-  sheet = "シート名or番号"
+    sheet = "シート名or番号"
 )
 ```
 

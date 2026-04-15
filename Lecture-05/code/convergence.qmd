@@ -53,7 +53,7 @@ summary(diamonds)
 ```{r}
 var_pop <- mean((diamonds$price - mean(diamonds$price))^2)
 var_pop
-sd_pop  <- sqrt(var_pop)
+sd_pop <- sqrt(var_pop)
 sd_pop
 ```
 
@@ -72,8 +72,8 @@ mean_pop
 
 ```{r}
 ggplot(data = diamonds) +
-  aes(x = price) +
-  geom_histogram()
+    aes(x = price) +
+    geom_histogram()
 ```
 
 ### データの無作為抽出
@@ -91,10 +91,13 @@ ggplot(data = diamonds) +
 pacman::p_load(withr)
 sample_size <- 100
 ss <- withr::with_seed(
-  31415,
-  dplyr::slice_sample(.data   = diamonds, 
-                      n       = sample_size, 
-                      replace = FALSE))
+    31415,
+    dplyr::slice_sample(
+        .data = diamonds,
+        n = sample_size,
+        replace = FALSE
+    )
+)
 ```
 
 ### 標本の概要を確認
@@ -123,8 +126,8 @@ var_pop
 
 ```{r}
 ggplot(data = ss) +
-  aes(x = price) +
-  geom_histogram()
+    aes(x = price) +
+    geom_histogram()
 ```
 
 ### 標本の数を増やす
@@ -140,11 +143,16 @@ ggplot(data = ss) +
 pacman::p_load(purrr)
 ## msはmulti samplesの略
 ms <- with_seed(
-  31415,
-  purrr::map(1:1000,
-             ~ slice_sample(.data   = diamonds,
-                            n       = sample_size,
-                            replace = FALSE)))
+    31415,
+    purrr::map(
+        1:1000,
+        ~ slice_sample(
+            .data = diamonds,
+            n = sample_size,
+            replace = FALSE
+        )
+    )
+)
 ```
 
 ### 各標本の標本平均を求める
@@ -155,10 +163,11 @@ ms <- with_seed(
 最後に結果のリストを`list_rbind()`関数を利用して, 各標本の平均を1つのデータフレームに縦方向に整理している.
 
 ```{r}
-ms_mean <- purrr::map(ms, 
-                      dplyr::summarise,
-                      sample_mean = mean(price)) |> 
-  list_rbind()
+ms_mean <- purrr::map(ms,
+    dplyr::summarise,
+    sample_mean = mean(price)
+) |>
+    list_rbind()
 ```
 
 ### 標本平均の平均を求める
@@ -188,20 +197,25 @@ var_pop / sample_size
 
 ```{r}
 ggplot(data = ms_mean) +
-  aes(x = sample_mean) +
-  geom_histogram(
-    aes(y = after_stat(density)),
-    fill  = "blue",
-    alpha = 0.2) +
-  geom_density(alpha = 0.5,
-               fill  = "blue") +
-  geom_vline(xintercept = mean_pop) +
-  stat_function(
-    fun  = dnorm,
-    args = list(
-      mean = mean_pop,
-      sd   = sqrt(var_pop / sample_size)),
-    linewidth = 2)
+    aes(x = sample_mean) +
+    geom_histogram(
+        aes(y = after_stat(density)),
+        fill  = "blue",
+        alpha = 0.2
+    ) +
+    geom_density(
+        alpha = 0.5,
+        fill = "blue"
+    ) +
+    geom_vline(xintercept = mean_pop) +
+    stat_function(
+        fun = dnorm,
+        args = list(
+            mean = mean_pop,
+            sd   = sqrt(var_pop / sample_size)
+        ),
+        linewidth = 2
+    )
 ```
 
 ### 標本分散と不偏標本分散の平均
@@ -210,11 +224,12 @@ ggplot(data = ms_mean) +
 
 ```{r}
 ms_var <- map(
-  ms, 
-  summarise,
-  sample_var   = mean((price - mean(price))^2),
-  unbiased_var = var(price)) |> 
-  list_rbind()
+    ms,
+    summarise,
+    sample_var   = mean((price - mean(price))^2),
+    unbiased_var = var(price)
+) |>
+    list_rbind()
 summarise(ms_var, mean(sample_var), mean(unbiased_var))
 var_pop
 ```

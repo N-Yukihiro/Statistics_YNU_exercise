@@ -37,9 +37,10 @@ str(sleep)
 library(pacman)
 p_load(dplyr)
 sleep <- mutate(sleep,
-                group = as.numeric(group),
-                group = 2 - group,
-                group = as.factor(group))
+    group = as.numeric(group),
+    group = 2 - group,
+    group = as.factor(group)
+)
 x <- dplyr::filter(sleep, group == 0)
 y <- dplyr::filter(sleep, group == 1)
 ```
@@ -60,13 +61,18 @@ summary(sleep)
 ```{r}
 p_load(ggplot2)
 ggplot(data = sleep) +
-  aes(x    = group, 
-      y    = extra, 
-      fill = group) +
-  geom_boxplot() + 
-  scale_x_discrete(
-    labels = c("treatment",
-               "control"))
+    aes(
+        x = group,
+        y = extra,
+        fill = group
+    ) +
+    geom_boxplot() +
+    scale_x_discrete(
+        labels = c(
+            "treatment",
+            "control"
+        )
+    )
 ```
 
 ###
@@ -76,15 +82,21 @@ ggplot(data = sleep) +
 
 ```{r}
 ggplot(data = sleep) +
-  aes(x      = group, 
-      y      = extra, 
-      colour = group) +
-  geom_point() +
-  geom_line(aes(group = ID),
-            colour = "lightgray") +
-  scale_x_discrete(
-    labels = c("treatment",
-               "control"))
+    aes(
+        x = group,
+        y = extra,
+        colour = group
+    ) +
+    geom_point() +
+    geom_line(aes(group = ID),
+        colour = "lightgray"
+    ) +
+    scale_x_discrete(
+        labels = c(
+            "treatment",
+            "control"
+        )
+    )
 ```
 
 ### 平均値と比較値との差のz検定
@@ -95,11 +107,13 @@ z検定を行うためには, `BDSA`パッケージの`z.test()`関数を利用
 
 ```{r}
 p_load(BSDA)
-BSDA::z.test(x$extra,
-             mu          = 10,
-             sigma.x     = sd(x$extra), 
-             alternative = "two.sided", 
-             conf.level  = 0.95)
+BSDA::z.test(
+    x$extra,
+    mu          = 10,
+    sigma.x     = sd(x$extra),
+    alternative = "two.sided",
+    conf.level  = 0.95
+)
 ```
 
 ### 結果の読み方
@@ -109,7 +123,7 @@ data:に分析に利用したデータが示される.
 ここではxというオブジェクト.
 3行目にz =でz値が, p-valueにp値が示されている.
 そして, alternative hypothesis: true mean is not equal to 10と対立仮説は母平均が帰無仮説である10と一致しないことであったことが示される.
-95 percent confidence intervalにデータの95%信頼区間が示される.
+95 percent confidence intervalにデータから推計される95%信頼区間が示される.
 
 ### 帰無仮説が受容される場合
 
@@ -117,11 +131,13 @@ data:に分析に利用したデータが示される.
 それ以外は変化しない.
 
 ```{r}
-z.test(x$extra, 
-       mu          = mean(x$extra), 
-       sigma.x     = sd(x$extra), 
-       alternative = "two.sided", 
-       conf.level  = 0.95)
+z.test(
+    x$extra,
+    mu          = mean(x$extra),
+    sigma.x     = sd(x$extra),
+    alternative = "two.sided",
+    conf.level  = 0.95
+)
 ```
 
 ### 平均値と比較値との差のt検定
@@ -133,10 +149,12 @@ t検定を行うためには, デフォルトで格納されている(正確に�
 結果の読み方は`z.test()`関数と同じ.
 
 ```{r}
-t.test(x           = x$extra,
-       mu          = 0, 
-       alternative = "two.sided", 
-       conf.level  = 0.95)
+t.test(
+    x = x$extra,
+    mu = 0,
+    alternative = "two.sided",
+    conf.level = 0.95
+)
 ```
 
 ### 対応のない平均値の差のt検定(等分散)
@@ -145,12 +163,14 @@ t.test(x           = x$extra,
 基本的に`x`にトリートメント群, `y`にコントロール群を指定する.
 
 ```{r}
-t.test(x           = x$extra,
-       y           = y$extra,
-       paired      = FALSE, 
-       var.equal   = TRUE,
-       alternative = "two.sided", 
-       conf.level  = 0.95)
+t.test(
+    x = x$extra,
+    y = y$extra,
+    paired = FALSE,
+    var.equal = TRUE,
+    alternative = "two.sided",
+    conf.level = 0.95
+)
 ```
 
 
@@ -160,11 +180,13 @@ t.test(x           = x$extra,
 `paired`の引数は指定できず, 自動で対応のない検定となる.
 
 ```{r}
-t.test(extra ~ group, 
-       data        = sleep, 
-       var.equal   = TRUE,
-       alternative = "two.sided",
-       conf.level  = 0.95)
+t.test(
+    extra ~ group,
+    data        = sleep,
+    var.equal   = TRUE,
+    alternative = "two.sided",
+    conf.level  = 0.95
+)
 ```
 
 ### 対応のない平均値の差のt検定(非等分散)
@@ -172,11 +194,13 @@ t.test(extra ~ group,
 対応がなく, 等分散でないデータにおける平均値の差のt検定を行うには, `t.test()`関数の中で, `var.equal = FALSE`と(`paired = FALSE`)を指定する.
 
 ```{r}
-t.test(extra ~ group, 
-       data        = sleep, 
-       var.equal   = FALSE,
-       alternative = "two.sided",
-       conf.level  = 0.95)
+t.test(
+    extra ~ group,
+    data        = sleep,
+    var.equal   = FALSE,
+    alternative = "two.sided",
+    conf.level  = 0.95
+)
 ```
 
 ### 対応のない2群のHedgesのd
@@ -188,9 +212,11 @@ Hedgesのdを計算するには, `choens_d()`関数を利用する.
 
 ```{r}
 p_load(effectsize)
-effectsize::cohens_d(extra ~ group,
-                     data   = sleep,
-                     paired = FALSE)
+effectsize::cohens_d(
+    extra ~ group,
+    data   = sleep,
+    paired = FALSE
+)
 ```
 
 ### 対応のない2群のHedgesのg
@@ -198,9 +224,11 @@ effectsize::cohens_d(extra ~ group,
 - Hedgesのdからバイアスを補正するために, 補正係数$(1 - \frac{3}{4(n_x + n_y) - 9} )$をかけたHedgesのgを計算するには, `hedges_g()`関数を利用する.
 
 ```{r}
-hedges_g(extra ~ group, 
-         data   = sleep,
-         paired = FALSE)
+hedges_g(
+    extra ~ group,
+    data   = sleep,
+    paired = FALSE
+)
 ```
 
 ### 対応のない2群のGlassの$\Delta$
@@ -208,8 +236,10 @@ hedges_g(extra ~ group,
 Glassの$\Delta$を利用するには, `glass_delta()`関数を利用する.
 
 ```{r}
-glass_delta(extra ~ group, 
-            data = sleep)
+glass_delta(
+    extra ~ group,
+    data = sleep
+)
 ```
 
 ### 対応のある平均値の差のt検定
@@ -217,11 +247,13 @@ glass_delta(extra ~ group,
 対応があるデータにおける平均値の差のt検定を行うには, `t.test()`関数の中で, `paired = TRUE`を指定する.
 
 ```{r}
-t.test(x           = x$extra, 
-       y           = y$extra,
-       paired      = TRUE,
-       alternative = "two.sided", 
-       conf.level  = 0.95)
+t.test(
+    x = x$extra,
+    y = y$extra,
+    paired = TRUE,
+    alternative = "two.sided",
+    conf.level = 0.95
+)
 ```
 
 ### 対応のある2群の効果量
@@ -229,9 +261,11 @@ t.test(x           = x$extra,
 対応のある2群の効果量を計算するには, `cohens_d()`関数の引数で`paired = TRUE`を指定する.
 
 ```{r}
-cohens_d(x     = x$extra, 
-         y     = y$extra,
-        paired = TRUE)
+cohens_d(
+    x = x$extra,
+    y = y$extra,
+    paired = TRUE
+)
 ```
 
 ### 母比率と比較値の差の$z$検定(両側検定)
@@ -240,13 +274,17 @@ cohens_d(x     = x$extra,
 受験者8920人のうち470人合格するのは, 6.79%と異なるかを検定する
 
 ```{r}
-female <- c(rep(0, 8450),
-            rep(1, 470))
-BSDA::z.test(x           = female, 
-             mu          = 0.0679, 
-             sigma.x     = sqrt(0.0527 * (1 - 0.0527)),
-             alternative = "two.sided",
-             conf.level  = .99)
+female <- c(
+    rep(0, 8450),
+    rep(1, 470)
+)
+BSDA::z.test(
+    x = female,
+    mu = 0.0679,
+    sigma.x = sqrt(0.0527 * (1 - 0.0527)),
+    alternative = "two.sided",
+    conf.level = .99
+)
 ```
 
 ### 母比率と比較値の差の$z$検定(片側検定)
@@ -254,11 +292,13 @@ BSDA::z.test(x           = female,
 片側検定を行うには, `alternative`の引数で`"less"` もしくは `"greater"`を指定する
 
 ```{r}
-z.test(x           = female, 
-       mu          = 6.79, 
-       sigma.x     = sqrt(mean(female) * (1 - mean(female))),
-       alternative = "less",
-       conf.level  = .99)
+z.test(
+    x = female,
+    mu = 6.79,
+    sigma.x = sqrt(mean(female) * (1 - mean(female))),
+    alternative = "less",
+    conf.level = .99
+)
 ```
 
 ### 適合度の$\chi^2$検定
@@ -266,8 +306,10 @@ z.test(x           = female,
 適合度の$\chi^2$検定を行うには, `chisq.test()`関数を利用する
 
 ```{r}
-chisq.test (x = c(470,    8450), 
-            p = c(0.0679, (1 - 0.0679)))
+chisq.test(
+    x = c(470, 8450),
+    p = c(0.0679, (1 - 0.0679))
+)
 ```
 
 ### 母比率と比較値の差の$F$検定
@@ -278,12 +320,14 @@ Rにデフォルトで格納されている`binom.test()`関数は$p$値の計�
 
 ```{r}
 p_load(exactci)
-exactci::binom.exact(x           = 470, 
-                     n           = 8920,
-                     p           = 0.0679,
-                     alternative = "two.sided",
-                     tsmethod    = "central", 
-                     conf.level  = .99)
+exactci::binom.exact(
+    x = 470,
+    n = 8920,
+    p = 0.0679,
+    alternative = "two.sided",
+    tsmethod = "central",
+    conf.level = .99
+)
 ```
 
 ### 対応のないデータにおける母比率の差のフィッシャーの正確検定
@@ -293,11 +337,14 @@ exactci::binom.exact(x           = 470,
 
 ```{r}
 p_load(exact2x2)
-Pass <- matrix(c(15, 5, 85, 60), 
-               nrow = 2)
-fisher.exact(x           = Pass,
-             alternative = "greater",
-             tsmethod    = "minlike")
+Pass <- matrix(c(15, 5, 85, 60),
+    nrow = 2
+)
+fisher.exact(
+    x = Pass,
+    alternative = "greater",
+    tsmethod = "minlike"
+)
 ```
 
 ### 対応のないデータにおける独立性の$\chi^2$検定

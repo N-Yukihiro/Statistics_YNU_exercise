@@ -17,8 +17,10 @@ data(vouchers)
 experimentdatar`パッケージのインストールができない方はこちらを実行
 ```{r}
 url <- "http://github.com/itamarcaspi/experimentdatar/raw/master/data/vouchers.rda"
-download.file(url      = url,
-              destfile = "vouchers.rda")
+download.file(
+    url      = url,
+    destfile = "vouchers.rda"
+)
 load("vouchers.rda")
 ```
 
@@ -30,14 +32,18 @@ load("vouchers.rda")
 
 ```{r}
 p_load(dplyr)
-dat <- dplyr::filter(vouchers,
-                     TAB3SMPL == 1,
-                     BOG95SMP == 1) |> 
-  dplyr::select(PRSCH_C, USNGSCH,PRSCHA_1, FINISH6:FINISH8,
-                REPT6, REPT, NREPT,
-                VOUCH0, # 説明変数
-                SVY, HSVISIT, DMONTH1:DMONTH12,
-                AGE, SEX2, STRATA1:STRATA6, STRATAMS)
+dat <- dplyr::filter(
+    vouchers,
+    TAB3SMPL == 1,
+    BOG95SMP == 1
+) |>
+    dplyr::select(
+        PRSCH_C, USNGSCH, PRSCHA_1, FINISH6:FINISH8,
+        REPT6, REPT, NREPT,
+        VOUCH0, # 説明変数
+        SVY, HSVISIT, DMONTH1:DMONTH12,
+        AGE, SEX2, STRATA1:STRATA6, STRATAMS
+    )
 ```
 
 ### データの要約
@@ -58,13 +64,13 @@ summary(dat)
 ```{r}
 No_controls <- "PRSCHA_1 ~ VOUCH0"
 controls <- "PRSCHA_1 ~ VOUCH0 + 
-       SVY + HSVISIT + 
-       DMONTH1 + DMONTH2 + DMONTH3 +
-       DMONTH4 + DMONTH5 + DMONTH6 + DMONTH7 + DMONTH8 +
-       DMONTH9 + DMONTH10 + DMONTH11 + 
-       AGE + SEX2 +
-       STRATA1 + STRATA2 + STRATA3 +
-       STRATA4 + STRATA5 + STRATAMS"
+    SVY + HSVISIT + 
+    DMONTH1 + DMONTH2 + DMONTH3 + DMONTH4 + 
+    DMONTH5 + DMONTH6 + DMONTH7 + DMONTH8 +
+    DMONTH9 + DMONTH10 + DMONTH11 + 
+    AGE + SEX2 +
+    STRATA1 + STRATA2 + STRATA3 +
+    STRATA4 + STRATA5 + STRATAMS"
 ```
 
 ### 最尤推定
@@ -73,10 +79,16 @@ controls <- "PRSCHA_1 ~ VOUCH0 +
     確率密度関数の分布族として正規分布(ガウス分布)を利用することを`family = "gaussian"`で宣言する
 
 ```{r}
-ml1 <- glm(No_controls, family = "gaussian", 
-           data = dat)
-ml2 <- glm(controls,    family = "gaussian", 
-           data = dat)
+ml1 <- glm(
+    No_controls,
+    family = "gaussian",
+    data = dat
+)
+ml2 <- glm(
+    controls,
+    family = "gaussian",
+    data = dat
+)
 ```
 
 ### 結果の確認(ml1)
@@ -97,13 +109,15 @@ summ(ml1)
 
 ```{r}
 p_load(stargazer)
-stargazer(ml1, ml2,
-          type              = "text",
-          style             = "all", 
-          ci                = TRUE,
-          star.cutoffs      = NA, 
-          omit.table.layout = 'n',
-          align             = TRUE)
+stargazer(
+    ml1, ml2,
+    type = "text",
+    style = "all",
+    ci = TRUE,
+    star.cutoffs = NA,
+    omit.table.layout = "n",
+    align = TRUE
+)
 ```
 
 ###
@@ -113,8 +127,7 @@ stargazer(ml1, ml2,
 
 ```{r}
 p_load(coefplot)
-multiplot(ml1, ml2,
-          coefficients = "VOUCH0")
+multiplot(ml1, ml2, coefficients = "VOUCH0")
 ```
 
 ### 退学率に関する分析
@@ -124,17 +137,23 @@ multiplot(ml1, ml2,
 ```{r}
 No_controls2 <- "PRSCH_C ~ VOUCH0"
 controls2 <- "PRSCH_C ~ VOUCH0 + 
-       SVY + HSVISIT + 
-       DMONTH1 + DMONTH2 + DMONTH3 +
-       DMONTH4 + DMONTH5 + DMONTH6 + DMONTH7 + DMONTH8 +
-       DMONTH9 + DMONTH10 + DMONTH11 + DMONTH12 +
-       AGE + SEX2 +
-       STRATA1 + STRATA2 + STRATA3 +
-       STRATA4 + STRATA5 + STRATA6 + STRATAMS"
-ml3 <- glm(No_controls2, family = "gaussian", 
-           data = dat)
-ml4 <- glm(controls2,    family = "gaussian", 
-           data = dat)
+      SVY + HSVISIT + 
+      DMONTH1 + DMONTH2 + DMONTH3 + DMONTH4 +
+      DMONTH5 + DMONTH6 + DMONTH7 + DMONTH8 +
+      DMONTH9 + DMONTH10 + DMONTH11 + DMONTH12 +
+      AGE + SEX2 +
+      STRATA1 + STRATA2 + STRATA3 +
+      STRATA4 + STRATA5 + STRATA6 + STRATAMS"
+ml3 <- glm(
+    No_controls2,
+    family = "gaussian",
+    data = dat
+)
+ml4 <- glm(
+    controls2,
+    family = "gaussian",
+    data = dat
+)
 ```
 
 ### 回帰係数の図示
@@ -142,8 +161,10 @@ ml4 <- glm(controls2,    family = "gaussian",
 割引券によって在籍し続ける(退学しない)ことに対する効果は一定程度認められることがわかる
 
 ```{r}
-multiplot(ml3, ml4,
-          coefficients = "VOUCH0")
+multiplot(
+    ml3, ml4,
+    coefficients = "VOUCH0"
+)
 ```
 
 ### AICとBIC
@@ -168,16 +189,17 @@ BIC(ml1, ml2, ml3, ml4)
 ```{r}
 formula_x <- "VOUCH0"
 formula_control <- "VOUCH0 +
-       SVY + HSVISIT + 
-       DMONTH1 + DMONTH2 + DMONTH3 +
-       DMONTH4 + DMONTH5 + DMONTH6 + DMONTH7 + DMONTH8 +
-       DMONTH9 + DMONTH10 + DMONTH11 + DMONTH12 +
-       AGE + SEX2 +
-       STRATA1 + STRATA2 + STRATA3 +
-       STRATA4 + STRATA5 + STRATA6 + STRATAMS"
+      SVY + HSVISIT + 
+      DMONTH1 + DMONTH2 + DMONTH3 + DMONTH4 +
+      DMONTH5 + DMONTH6 + DMONTH7 + DMONTH8 +
+      DMONTH9 + DMONTH10 + DMONTH11 + DMONTH12 +
+      AGE + SEX2 +
+      STRATA1 + STRATA2 + STRATA3 +
+      STRATA4 + STRATA5 + STRATA6 + STRATAMS"
 formula_y <- c(
-  "PRSCH_C","USNGSCH","PRSCHA_1","FINISH6","FINISH7",
-  "FINISH8","REPT6","REPT","NREPT")
+    "PRSCH_C", "USNGSCH", "PRSCHA_1", "FINISH6", "FINISH7",
+    "FINISH8", "REPT6", "REPT", "NREPT"
+)
 ```
 
 ### 推定するモデルを作成2
@@ -186,15 +208,15 @@ formula_y <- c(
 
 ```{r}
 p_load(tibble)
-base_reg_formula        <- paste(formula_y, "~",    formula_x)
+base_reg_formula <- paste(formula_y, "~", formula_x)
 names(base_reg_formula) <- paste(formula_y, "base", sep = "_")
 
-control_reg_formula     <- paste(formula_y, "~", formula_control)
-names(control_reg_formula) <- paste(formula_y, 
-                                    "control", sep = "_")
+control_reg_formula <- paste(formula_y, "~", formula_control)
+names(control_reg_formula) <- paste(formula_y, "control", sep = "_")
 
-models <- c(base_reg_formula, control_reg_formula) |> 
-  enframe(name = "model_index", value = "formula")```
+models <- c(base_reg_formula, control_reg_formula) |>
+    enframe(name = "model_index", value = "formula")
+```
 
 ### 回帰分析をまとめて実行
 
@@ -202,9 +224,9 @@ models <- c(base_reg_formula, control_reg_formula) |>
 
 ```{r}
 p_load(purrr, broom)
-df_models <- models |> 
-  mutate(model = map(.x = formula, .f = lm, data = dat)) |> 
-  mutate(lm_result = map(.x = model, .f = broom::tidy))
+df_models <- models |>
+    mutate(model = map(.x = formula, .f = lm, data = dat)) |>
+    mutate(lm_result = map(.x = model, .f = broom::tidy))
 ```
 
 ### 結果を整形
@@ -213,10 +235,10 @@ df_models <- models |>
 
 ```{r}
 p_load(tidyr)
-df_results <- df_models |> 
-  mutate(formula = as.character(formula)) |> 
-  select(formula, model_index, lm_result) |> 
-  unnest(cols = c(lm_result))
+df_results <- df_models |>
+    mutate(formula = as.character(formula)) |>
+    select(formula, model_index, lm_result) |>
+    unnest(cols = c(lm_result))
 ```
 
 ### 結果の表示
@@ -224,9 +246,9 @@ df_results <- df_models |>
 説明変数の結果のみを抽出し, 確認する
 
 ```{r}
-df_results %>% 
-  select(model_index, term:p.value) |>  
-  dplyr::filter(term == "VOUCH0")
+df_results |>
+    dplyr::select(model_index, term:p.value) |>
+    dplyr::filter(term == "VOUCH0")
 ```
 
 ### 結果の図示
@@ -235,17 +257,18 @@ df_results %>%
 
 ```{r}
 p_load(ggplot2)
-df_results |> 
-  select(model_index, term:p.value) |> 
-  dplyr::filter(term == "VOUCH0") |> 
-  ggplot() +
-  aes(x = model_index,
-      y = estimate) +
-  geom_point() +
-  geom_errorbar(aes(ymin = estimate - std.error * 1.96,
-                    ymax = estimate + std.error * 1.96)) +
-  geom_hline(yintercept = 0) +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+df_results |>
+    dplyr::select(model_index, term:p.value) |>
+    dplyr::filter(term == "VOUCH0") |>
+    ggplot() +
+    aes(x = model_index, y = estimate) +
+    geom_point() +
+    geom_errorbar(aes(
+        ymin = estimate - std.error * 1.96,
+        ymax = estimate + std.error * 1.96
+    )) +
+    geom_hline(yintercept = 0) +
+    theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
 
 ### ロバストな推計
@@ -256,8 +279,10 @@ df_results |>
 
 ```{r}
 p_load(estimatr)
-HC3 <- lm_robust(as.formula(controls),
-                 data = dat,
-                 se_type = "HC3")
+HC3 <- lm_robust(
+    as.formula(controls),
+    data = dat,
+    se_type = "HC3"
+)
 summary(HC3)
 ```

@@ -87,14 +87,17 @@ pbinom(q = 1, size = 100, prob = 0.005, lower.tail = FALSE)
 library(pacman)
 pacman::p_load(ggplot2)
 ggplot() +
-  xlim(0, 5) +
-  stat_function(
-    fun   = dbinom,
-    n     = 6,
-    args  = list(size = 100,
-                 prob = 0.005),
-    na.rm = TRUE,
-    geom  = "bar")
+    xlim(0, 5) +
+    stat_function(
+        fun = dbinom,
+        n = 6,
+        args = list(
+            size = 100,
+            prob = 0.005
+        ),
+        na.rm = TRUE,
+        geom = "bar"
+    )
 ```
 
 ### 二項分布とグラフ2
@@ -103,11 +106,14 @@ ggplot() +
 
 ```{r}
 ggplot(data = NULL) +
-  xlim(0, 1) +
-  stat_function(
-    fun  = dbinom,
-    args = list(x    = 10, 
-                size = 10))
+    xlim(0, 1) +
+    stat_function(
+        fun = dbinom,
+        args = list(
+            x = 10,
+            size = 10
+        )
+    )
 ```
 
 ### 正規分布の確率密度
@@ -122,7 +128,7 @@ dnorm(x = 0)
 標準正規分布の確率密度関数の定義に従って計算を行う.
 
 ```{r}
-1 / sqrt(2 * pi) * exp(- 0^2 / 2)
+1 / sqrt(2 * pi) * exp(-0^2 / 2)
 ```
 
 ### 正規分布の確率密度関数とグラフ
@@ -131,9 +137,10 @@ dnorm(x = 0)
 
 ```{r}
 ggplot() +
-  xlim(-4, 4) +
-  geom_function(
-    fun = dnorm)
+    xlim(-4, 4) +
+    geom_function(
+        fun = dnorm
+    )
 ```
 
 ### 正規分布の確率密度関数と平均
@@ -143,13 +150,15 @@ ggplot() +
 
 ```{r}
 ggplot() +
-  xlim(-4, 5) +
-  geom_function(
-    fun      = dnorm, 
-    linetype = "dashed") +
-  geom_function(
-    fun  = dnorm, 
-    args = list(mean = 1))
+    xlim(-4, 5) +
+    geom_function(
+        fun      = dnorm,
+        linetype = "dashed"
+    ) +
+    geom_function(
+        fun  = dnorm,
+        args = list(mean = 1)
+    )
 ```
 
 ### 正規分布の確率密度関数と標準偏差
@@ -159,13 +168,15 @@ ggplot() +
 
 ```{r}
 ggplot() +
-  xlim(-4, 4) +
-  geom_function(
-    fun      = dnorm, 
-    linetype = "dashed") +
-  geom_function(
-    fun  = dnorm, 
-    args = list(sd = 0.5))
+    xlim(-4, 4) +
+    geom_function(
+        fun      = dnorm,
+        linetype = "dashed"
+    ) +
+    geom_function(
+        fun  = dnorm,
+        args = list(sd = 0.5)
+    )
 ```
 
 ### 正規分布の累積分布
@@ -184,9 +195,9 @@ pnorm(q = -1.96)
 `(x)`が定義した関数が取る引数であり, `{}`内に関数の定義を記述する.
 
 ```{r}
- f <- function(x){
-   1 / sqrt(2 * pi) * exp(- x^2 / 2)
- } 
+f <- function(x) {
+    1 / sqrt(2 * pi) * exp(-x^2 / 2)
+}
 ```
 
 次に, 数値積分を行う`integrate()`関数を利用して積分を行い累積分布を求める.
@@ -202,19 +213,21 @@ integrate(f, -1.96, 1.96)
 1変数関数の積分の近似解を求める.
 リーマン積分の考え方に準じて数値積分を行う関数を作成する.
 ```{r}
-approx_integration <- 
-  function(fun, from, to, length = 1000) {
-    x_range <- seq(from       = from,
-                   to         = to,
-                   length.out = length)
-    delta   <- x_range[2] - x_range[1]
+approx_integration <-
+    function(fun, from, to, length = 1000) {
+        x_range <- seq(
+            from = from,
+            to = to,
+            length.out = length
+        )
+        delta <- x_range[2] - x_range[1]
 
-    result <- 0
-    for(i in 1:(length - 1)) {
-      result <- result + fun(x_range[i]) * delta
+        result <- 0
+        for (i in 1:(length - 1)) {
+            result <- result + fun(x_range[i]) * delta
+        }
+        return(result)
     }
-    return(result)
-  }
 ```
 
 ### 数値積分の実行(Advanced)
@@ -222,10 +235,12 @@ approx_integration <-
 積分する区間を等間隔に分け、関数を実行する.
 
 ```{r}
-approx_integration(fun    = f, 
-                   from   = -1.96,
-                   to     = 1.96,
-                   length = 1000)
+approx_integration(
+    fun = f,
+    from = -1.96,
+    to = 1.96,
+    length = 1000
+)
 ```
 
 
@@ -235,9 +250,10 @@ approx_integration(fun    = f,
 
 ```{r}
 ggplot() +
-  xlim(-3, 3) +
-  geom_function(
-    fun = pnorm)
+    xlim(-3, 3) +
+    geom_function(
+        fun = pnorm
+    )
 ```
 
 ### 正規分布の確率点
@@ -257,12 +273,14 @@ qnorm(p = 0.025, mean = 0, sd = 1)
 
 ```{r}
 ggplot() +
-  xlim(-3, 3) +
-  geom_function(
-    fun = dnorm) +
-  geom_vline(
-    xintercept = qnorm(p = 0.025),
-    colour     = "red")
+    xlim(-3, 3) +
+    geom_function(
+        fun = dnorm
+    ) +
+    geom_vline(
+        xintercept = qnorm(p = 0.025),
+        colour     = "red"
+    )
 ```
 
 

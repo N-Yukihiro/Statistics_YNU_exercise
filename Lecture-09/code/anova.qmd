@@ -29,9 +29,13 @@ str(social)
 
 ```{r}
 p_load(dplyr)
-data <- mutate(social,
-               across(where(is.character),
-                      as.factor))
+data <- mutate(
+    social,
+    across(
+        where(is.character),
+        as.factor
+    )
+)
 ```
 
 ### データ構造のチェック
@@ -56,20 +60,26 @@ summary(data)
 
 ```{r}
 summarise(data,
-          mean(primary2006),
-          .by = messages)
+    mean(primary2006),
+    .by = messages
+)
 ```
 
 またコントロールグループとの比較も行う
 
 ```{r}
-control <- summarise(dplyr::filter(data,
-                                   messages == "Control"),
-                     mean(primary2006))
+control <- summarise(
+    dplyr::filter(
+        data,
+        messages == "Control"
+    ),
+    mean(primary2006)
+)
 
 summarise(data,
-          mean(primary2006) - control,
-          .by = messages)
+    mean(primary2006) - control,
+    .by = messages
+)
 ```
 
 ### メッセージの効果を一元配置分散分析にて検証する
@@ -77,8 +87,11 @@ summarise(data,
 分散分析をするために`aov()`関数を利用する
 
 ```{r}
-summary(aov(primary2006 ~ messages, 
-            data = data))
+summary(
+    aov(primary2006 ~ messages,
+        data = data
+    )
+)
 ```
 
 ### 多重比較
@@ -89,9 +102,11 @@ Bonferroni法による補正をしながら各メッセージ間の比較を行�
 わかりやすくするために有意水準を検定数で割るのではなく, p値に検定数をかけることで同様の効果を達成している.
 
 ```{r}
-pairwise.t.test(data$primary2006,
-                data$messages, 
-                p.adjust.method = "bonferroni")
+pairwise.t.test(
+    data$primary2006,
+    data$messages,
+    p.adjust.method = "bonferroni"
+)
 ```
 
 ### メッセージと年齢の効果を二元配置分散分析にて検証する
@@ -99,8 +114,11 @@ pairwise.t.test(data$primary2006,
 メッセージと年齢の効果(主効果のみ)を二元配置分散分析にて検証する
 
 ```{r}
-summary(aov(primary2006 ~ messages + sex, 
-            data = data))
+summary(
+    aov(primary2006 ~ messages + sex,
+        data = data
+    )
+)
 ```
 
 ### メッセージと年齢の効果を二元配置分散分析にて検証する
@@ -108,6 +126,9 @@ summary(aov(primary2006 ~ messages + sex,
 メッセージと年齢の効果(交互作用含)を二元配置分散分析にて検証する
 
 ```{r}
-summary(aov(primary2006 ~ messages * sex, 
-            data = data))
+summary(
+    aov(primary2006 ~ messages * sex,
+        data = data
+    )
+)
 ```

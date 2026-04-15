@@ -1,24 +1,11 @@
 library(pacman)
-p_load(ggplot2, dplyr)
-
-bind_rows(
-  tibble(x    = 0:20,
-         y    = dbinom(x    = 0:20,
-                       size = 20,
-                       prob = 0.5),
-         prob = "50%"),
-  tibble(x    = 0:20,
-         y    = dbinom(x    = 0:20,
-                       size = 20,
-                       prob = 0.75),
-         prob = "75%")) |> 
-  ggplot() +
-  aes(x      = x, 
-      y      = y,
-      colour = prob) +
-  geom_path() +
-  geom_vline(xintercept = 15,
-             linetype   = "dashed") +
-  xlab("") +
-  ylab("") +
-  theme_bw()
+p_load(tibble, ggplot2)
+fig_06_04 <- tibble(
+    size = 10:200,
+    value = qt(p = 0.025, df = size - 1),
+    diff = qnorm(0.025) - value
+) |>
+    ggplot() +
+    aes(x = size, y = diff) +
+    geom_path()
+print(fig_06_04)

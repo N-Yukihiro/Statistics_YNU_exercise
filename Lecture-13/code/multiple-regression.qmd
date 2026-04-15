@@ -11,8 +11,10 @@ format: html
 ```{r}
 library(pacman)
 p_load(dplyr, wooldridge)
-dat <- select(saving,
-              sav, inc, educ)
+dat <- select(
+    saving,
+    sav, inc, educ
+)
 str(dat)
 ```
 
@@ -63,13 +65,15 @@ star.cutoffs = NA, omit.table.layout = "n"は忘れない
 
 ```{r}
 p_load(stargazer)
-stargazer::stargazer(ols2,
-                     type              = "text",
-                     style             = "all", 
-                     ci                = TRUE,
-                     star.cutoffs      = NA, 
-                     omit.table.layout = 'n',
-                     align             = TRUE)
+stargazer::stargazer(
+    ols2,
+    type              = "text",
+    style             = "all",
+    ci                = TRUE,
+    star.cutoffs      = NA,
+    omit.table.layout = "n",
+    align             = TRUE
+)
 ```
 
 ### 複数の分析結果を並べる
@@ -77,13 +81,15 @@ stargazer::stargazer(ols2,
 複数の分析結果を並べるのにもstargazer`は有用
 
 ```{r}
-stargazer(ols1, ols2,
-          type              = "text",
-          style             = "all", 
-          ci                = TRUE,
-          star.cutoffs      = NA, 
-          omit.table.layout = 'n',
-          align             = TRUE)
+stargazer(
+    ols1, ols2,
+    type              = "text",
+    style             = "all",
+    ci                = TRUE,
+    star.cutoffs      = NA,
+    omit.table.layout = "n",
+    align             = TRUE
+)
 ```
 
 ### 結果の図示
@@ -102,8 +108,10 @@ coefplot(ols2)
 intercept = FALSEを引数に入れれば定数項を表示しない
 
 ```{r}
-coefplot(ols2,
-         intercept = FALSE)
+coefplot(
+    ols2,
+    intercept = FALSE
+)
 ```
 
 ### 複数のモデルを比較
@@ -111,32 +119,34 @@ coefplot(ols2,
 複数のモデルをグラフを用いて比較するには, coefplotパッケージのmultiplot()関数が便利
 
 ```{r}
-multiplot(ols1, ols2,
-          intercept = FALSE)
+multiplot(
+    ols1, ols2,
+    intercept = FALSE
+)
 ```
 
 ### 標準回帰係数のプロット
 
-標準回帰係数へはarmパッケージのstandardize(standardize.y = TRUE)で変換できる
+標準回帰係数へは`jtools`パッケージの`plot_summs()`で変換できる
 
 ```{r}
-p_load(arm)
-coefplot::coefplot(
-  arm::standardize(ols2,
-                   standardize.y = TRUE))
+plot_summs(ols2,
+    scale = TRUE,
+    transform.response = TRUE
+)
 ```
 
 ### 標準回帰係数のマルチプロット
 
-標準回帰係数へはarmパッケージのstandardize(standardize.y = TRUE)で変換すれば, マルチプロットもできる
+標準回帰係数へは`jtools::plot_summs()`で同様に変換してマルチプロットできる
 
 ```{r}
-multiplot(
-  arm::standardize(ols1,
-                   standardize.y = TRUE),
-  arm::standardize(ols2,
-                   standardize.y = TRUE),
-  names = c("model1", "model2"))
+jtools::plot_summs(
+    ols1, ols2,
+    scale = TRUE,
+    transform.response = TRUE,
+    model.names = c("model1", "model2")
+)
 ```
 .
 ### LOOCVの計算
@@ -145,10 +155,12 @@ multiplot(
 
 ```{r}
 p_load(caret)
-model <- train(sav ~ inc, 
-               data      = dat,
-               method    = "lm", 
-               trControl = trainControl(method = "LOOCV"))
+model <- train(
+    sav ~ inc,
+    data      = dat,
+    method    = "lm",
+    trControl = trainControl(method = "LOOCV")
+)
 model
 ```
 
@@ -201,9 +213,11 @@ x軸が予測値, y軸が残差
 
 ```{r}
 p_load(ggfortify)
-autoplot(ols2, 
-         which = 1, 
-         ncol  = 1)
+autoplot(
+    ols2,
+    which = 1,
+    ncol  = 1
+)
 ```
 
 ### 残差の平方根プロット
@@ -211,9 +225,11 @@ autoplot(ols2,
 残差の変動を確認するため, x軸が予測値, y軸が標準化した残差の絶対値の平和根の散布図を描く
 
 ```{r}
-autoplot(ols2, 
-         which = 3, 
-         ncol  = 1)
+autoplot(
+    ols2,
+    which = 3,
+    ncol  = 1
+)
 ```
 
 ### 残差の正規Q-Qプロット
@@ -221,9 +237,11 @@ autoplot(ols2,
 残差の正規Q-Qプロットで直線状に標準化した残差が乗っているかチェックする
 
 ```{r}
-autoplot(ols2, 
-         which = 2,
-         ncol  = 1)
+autoplot(
+    ols2,
+    which = 2,
+    ncol = 1
+)
 ```
 
 ### 標準化残差とてこ比のプロット
@@ -231,9 +249,11 @@ autoplot(ols2,
 x軸にてこ比, y軸に標準化残差を描画する
 
 ```{r}
-autoplot(ols2,
-         which = 5,
-         ncol  = 1)
+autoplot(
+    ols2,
+    which = 5,
+    ncol = 1
+)
 ```
 
 ### てこ比とCookの距離のプロット
@@ -241,9 +261,11 @@ autoplot(ols2,
 x軸にてこ比, y軸にCookの距離を設定し, 散布図を描く
 
 ```{r}
-autoplot(ols2, 
-         which = 6, 
-         ncol  = 1)
+autoplot(
+    ols2,
+    which = 6,
+    ncol = 1
+)
 ```
 
 ### 多重共線性のチェック
@@ -265,13 +287,13 @@ car::vif(ols2)
 ```{r}
 p_load(ggdag)
 dag1 <- ggdag::dagify(
-  Y ~ X + Z,
-  X ~ Z,
-  Y ~ Z,
-  exposure = "X",
-  outcome  = "Y"
-) |> 
-  ggdag::tidy_dagitty()
+    Y ~ X + Z,
+    X ~ Z,
+    Y ~ Z,
+    exposure = "X",
+    outcome  = "Y"
+) |>
+    ggdag::tidy_dagitty()
 ```
 
 ### DAGの描画
@@ -279,8 +301,8 @@ dag1 <- ggdag::dagify(
 `ggdag::ggdag()`関数で先ほど設定したDAGをグラフにできる
 
 ```{r}
-ggdag::ggdag(dag1) + 
-  ggdag::theme_dag()
+ggdag::ggdag(dag1) +
+    ggdag::theme_dag()
 ```
 
 ### 考慮すべき説明変数
@@ -296,21 +318,21 @@ ggdag::ggdag_adjustment_set(dag1)
 
 ```{r}
 comp_dag <- dagify(
-  Y  ~ X  + Z1 + Z2,
-  Z1 ~ X  + Z2,
-  Z2 ~ Z3 + Z4,
-  X  ~ Z2,
-  exposure = "X",
-  outcome  = "Y"
-) |> 
-  tidy_dagitty()
+    Y ~ X + Z1 + Z2,
+    Z1 ~ X + Z2,
+    Z2 ~ Z3 + Z4,
+    X ~ Z2,
+    exposure = "X",
+    outcome  = "Y"
+) |>
+    tidy_dagitty()
 ```
 
 ### 複雑なDAGの描画
 
 ```{r}
 ggdag(comp_dag) +
-  theme_dag()
+    theme_dag()
 ```
 
 ### 複雑なDAGとコントロール変数

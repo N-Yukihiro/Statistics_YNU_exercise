@@ -19,9 +19,11 @@ str(iris)
 library(pacman)
 p_load(ggplot2)
 ggplot(data = iris) +
-  aes(x = Petal.Length, 
-      y = Petal.Width) +
-  geom_point()
+    aes(
+        x = Petal.Length,
+        y = Petal.Width
+    ) +
+    geom_point()
 ```
 
 ### 層別に散布図の色を分ける1
@@ -30,10 +32,12 @@ ggplot(data = iris) +
 
 ```{r}
 ggplot(data = iris) +
-  aes(x      = Petal.Length, 
-      y      = Petal.Width,
-      colour = Species) +
-  geom_point()
+    aes(
+        x = Petal.Length,
+        y = Petal.Width,
+        colour = Species
+    ) +
+    geom_point()
 ```
 
 ### 層別に散布図を描画する
@@ -45,11 +49,14 @@ aes(colour = group name)を残せばグループ別に色を分けてくれる.
 
 ```{r}
 ggplot(data = iris) +
-  aes(x = Petal.Length, 
-      y = Petal.Width) +
-  geom_point() +
-  facet_wrap(~ Species, 
-             scales = "free")
+    aes(
+        x = Petal.Length,
+        y = Petal.Width
+    ) +
+    geom_point() +
+    facet_wrap(~Species,
+        scales = "free"
+    )
 ```
 
 ### ピアソンの積率相関係数の算出
@@ -57,9 +64,11 @@ ggplot(data = iris) +
 ピアソンの積率相関係数を算出するためには, cor.test()関数を利用する.
 
 ```{r}
-cor.test(x      = iris$Petal.Length,
-         y      = iris$Petal.Width,
-         method = "pearson")
+cor.test(
+    x = iris$Petal.Length,
+    y = iris$Petal.Width,
+    method = "pearson"
+)
 ```
 
 ### スピアマンの順位相関係数の算出
@@ -67,9 +76,11 @@ cor.test(x      = iris$Petal.Length,
 スピアマンの順位相関係数を算出するためには, 引数にmethod = "spearman"を追加する.
 
 ```{r}
-cor.test(x      = iris$Petal.Length,
-         y      = iris$Petal.Width,
-         method = "spearman")
+cor.test(
+    x = iris$Petal.Length,
+    y = iris$Petal.Width,
+    method = "spearman"
+)
 ```
 
 ### ペアプロット
@@ -88,9 +99,10 @@ ggpairs(iris)
 グループ別に色分けしたり, グループ別相関係数を算出したりする場合には, aes(colour = group name)を引数に追加する.
 
 ```{r}
-ggpairs(iris, 
-        aes(colour = Species,
-            alpha  = 0.5))
+ggpairs(
+    iris,
+    aes(colour = Species, alpha = 0.5)
+)
 ```
 
 ### まとめて検定

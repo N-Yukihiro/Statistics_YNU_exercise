@@ -37,11 +37,16 @@ sd_pop
 ```{r}
 p_load(withr, purrr, dplyr)
 ## msはmulti samplesの略
-ms <- with_seed(27182,
-                map(1:1000,
-                    \(x) slice_sample(diamonds,
-                                      n       = 100,
-                                      replace = FALSE)))
+ms <- with_seed(
+    27182,
+    map(
+        1:1000,
+        \(x) slice_sample(diamonds,
+            n       = 100,
+            replace = FALSE
+        )
+    )
+)
 ```
 
 ### 各サンプルの平均と95%信頼区間を計算する
@@ -52,14 +57,15 @@ ms <- with_seed(27182,
 
 ```{r}
 ms_ci <- map(
-  ms,
-  summarise,
-  lowerCI = mean(price) + 
-    qnorm(0.025) * sqrt(var_pop / n()),
-  mean    = mean(price),
-  upperCI = mean(price) + 
-    qnorm(0.975) * sqrt(var_pop / n())) |>
-  list_rbind(names_to = "number")
+    ms,
+    summarise,
+    lowerCI = mean(price) +
+        qnorm(0.025) * sqrt(var_pop / n()),
+    mean = mean(price),
+    upperCI = mean(price) +
+        qnorm(0.975) * sqrt(var_pop / n())
+) |>
+    list_rbind(names_to = "number")
 ```
 
 ### 信頼区間とパラメーター
@@ -72,9 +78,11 @@ ms_ci <- map(
 ここでは, 信頼区間の下限より大きく, 上限より小さい場合に`TRUE`, そうでない場合に`FALSE`を格納するように指示している.
 
 ```{r}
-ci_TF <- dplyr::mutate(ms_ci, 
-                       TF = lowerCI   <= mean_pop &
-                           upperCI >= mean_pop)
+ci_TF <- dplyr::mutate(
+    ms_ci,
+    TF = lowerCI <= mean_pop &
+        upperCI >= mean_pop
+)
 ```
 
 ### 信頼区間にパラメーターが含まれる割合
@@ -90,21 +98,27 @@ summarise(ci_TF, mean(TF))
 ### 
 
 標本をすべて表示するのは多すぎるので, 先頭の100標本だけ表示する.
-`geom_errobar()`関数は信頼区間などを示す際に利用できる.
+`geom_errorbar()`関数は信頼区間などを示す際に利用できる.
 `aes()`内で下限を`ymin`で, 上限を`ymax`で与える.
 
 ```{r}
-ggplot(data  = head(ci_TF, 100)) +
-  aes(x      = number, 
-      y      = mean,
-      colour = TF) +
-  geom_point() +
-  geom_errorbar(
-    aes(ymin = lowerCI,
-        ymax = upperCI), 
-    width = .2) +
-  geom_hline(
-    yintercept = mean_pop, 
-    linetype   = "dashed", 
-    colour     = "black")
+ggplot(data = head(ci_TF, 100)) +
+    aes(
+        x = number,
+        y = mean,
+        colour = TF
+    ) +
+    geom_point() +
+    geom_errorbar(
+        aes(
+            ymin = lowerCI,
+            ymax = upperCI
+        ),
+        width = .2
+    ) +
+    geom_hline(
+        yintercept = mean_pop,
+        linetype   = "dashed",
+        colour     = "black"
+    )
 ```

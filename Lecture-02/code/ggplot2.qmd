@@ -25,11 +25,11 @@ ggplot()
 
 ```{r}
 ggplot() +
-  geom_histogram(
-    data    = penguins,
-    mapping = aes(
-      x = bill_length_mm
-      )
+    geom_histogram(
+        data = penguins,
+        mapping = aes(
+            x = bill_length_mm
+        )
     )
 ```
 
@@ -41,39 +41,48 @@ ggplot() +
 
 ```{r}
 ggplot() +
-  geom_histogram(
-    data    = penguins,
-    mapping = aes(
-      x = bill_length_mm,
-      y = after_stat(density)),
-    fill = "blue") +
-  geom_density(
-    data    = penguins,
-    mapping = aes(
-      x = bill_length_mm,
-      y = after_stat(density)),
-    alpha = 0)
+    geom_histogram(
+        data = penguins,
+        mapping = aes(
+            x = bill_length_mm,
+            y = after_stat(density)
+        ),
+        fill = "blue"
+    ) +
+    geom_density(
+        data = penguins,
+        mapping = aes(
+            x = bill_length_mm,
+            y = after_stat(density)
+        ),
+        alpha = 0
+    )
 ```
 
 何度も同じデータやx軸等が利用できる場合には, はじめの`ggplot()`の引数の中でまとめて指定することができます.
 
 ```{r}
-ggplot(data    = penguins,
-       mapping = aes(
-         x = bill_length_mm,
-         y = after_stat(density))) +
-  geom_histogram(fill = "blue") +
-  geom_density(alpha = 0)
+ggplot(
+    data = penguins,
+    mapping = aes(
+        x = bill_length_mm,
+        y = after_stat(density)
+    )
+) +
+    geom_histogram(fill = "blue") +
+    geom_density(alpha = 0)
 ```
 
 さらに軸などを指定する`aes()`は外に出すこともできます
 
 ```{r}
 ggplot(data = penguins) +
-  aes(x = bill_length_mm,
-      y = after_stat(density)) +
-  geom_histogram(fill = "blue") +
-  geom_density(alpha  = 0)
+    aes(
+        x = bill_length_mm,
+        y = after_stat(density)
+    ) +
+    geom_histogram(fill = "blue") +
+    geom_density(alpha = 0)
 ```
 
 
@@ -82,11 +91,13 @@ ggplot(data = penguins) +
 
 ```{r}
 ggplot(data = penguins) +
-  aes(x = bill_length_mm,
-      y = after_stat(density)) +
-  geom_histogram(fill = "blue") +
-  geom_density(alpha = 0) +
-  theme_classic()
+    aes(
+        x = bill_length_mm,
+        y = after_stat(density)
+    ) +
+    geom_histogram(fill = "blue") +
+    geom_density(alpha = 0) +
+    theme_classic()
 ```
 
 最後にタイトルをつけます.
@@ -95,12 +106,14 @@ ggplot(data = penguins) +
 
 ```{r}
 ggplot(data = penguins) +
-  aes(x = bill_length_mm,
-      y = after_stat(density)) +
-  geom_histogram(fill = "blue") +
-  geom_density(alpha = 0) +
-  theme_classic() +
-  ggtitle("histogram and density")
+    aes(
+        x = bill_length_mm,
+        y = after_stat(density)
+    ) +
+    geom_histogram(fill = "blue") +
+    geom_density(alpha = 0) +
+    theme_classic() +
+    ggtitle("histogram and density")
 ```
 
 ### 1枚のグラフにカテゴリーごとのヒストグラムを描く
@@ -111,13 +124,16 @@ ggplot(data = penguins) +
 
 ```{r}
 ggplot(data = penguins) +
-  aes(x    = bill_length_mm,
-      y    = after_stat(density),
-      fill = species) +
-  geom_histogram(
-    position = "identity",
-    alpha    = 0.5) +
-  geom_density(alpha = 0)
+    aes(
+        x = bill_length_mm,
+        y = after_stat(density),
+        fill = species
+    ) +
+    geom_histogram(
+        position = "identity",
+        alpha    = 0.5
+    ) +
+    geom_density(alpha = 0)
 ```
 
 ### 別々のグラフにカテゴリーごとのグラフを描く
@@ -128,13 +144,17 @@ ggplot(data = penguins) +
 
 ```{r}
 ggplot(data = penguins) +
-  aes(x    = bill_length_mm,
-      y    = after_stat(density),
-      fill = species) +
-  geom_histogram() +
-  geom_density(alpha = 0) + 
-  facet_wrap(~species,
-             scales = "free")
+    aes(
+        x = bill_length_mm,
+        y = after_stat(density),
+        fill = species
+    ) +
+    geom_histogram() +
+    geom_density(alpha = 0) +
+    facet_wrap(
+        ~species,
+        scales = "free"
+    )
 ```
 
 ggplot2を利用した作図方法の概要は以上です.
